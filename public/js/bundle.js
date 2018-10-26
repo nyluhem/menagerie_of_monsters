@@ -91,9 +91,42 @@
   !*** ./src/app.js ***!
   \********************/
 /*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+eval("const Monsters = __webpack_require__(/*! ./models/monsters.js */ \"./src/models/monsters.js\");\n\n\ndocument.addEventListener('DOMContentLoaded', () => {\n  console.log(\"JavaScript loaded.\")\n\n  const monsters = new Monsters();\n  monsters.getData()\n  console.log(monsters)\n\n});\n\n\n//# sourceURL=webpack:///./src/app.js?");
+
+/***/ }),
+
+/***/ "./src/helpers/pub_sub.js":
+/*!********************************!*\
+  !*** ./src/helpers/pub_sub.js ***!
+  \********************************/
+/*! no static exports found */
 /***/ (function(module, exports) {
 
-eval("\n\n//# sourceURL=webpack:///./src/app.js?");
+eval("const PubSub = {\n  publish: function (channel, payload) {\n    const event = new CustomEvent(channel, {\n      detail: payload\n    });\n    document.dispatchEvent(event);\n  },\n\n  subscribe: function (channel, callback) {\n    document.addEventListener(channel, callback);\n  }\n};\n\nmodule.exports = PubSub;\n\n\n//# sourceURL=webpack:///./src/helpers/pub_sub.js?");
+
+/***/ }),
+
+/***/ "./src/helpers/request_helper.js":
+/*!***************************************!*\
+  !*** ./src/helpers/request_helper.js ***!
+  \***************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("const Request = function (url) {\n  this.url = url;\n};\n\nRequest.prototype.get = function () {\n  return fetch(this.url)\n    .then( (response) => response.json() );\n};\n\n// Request.prototype.get = function (onComplete, onError) {\n//   const xhr = new XMLHttpRequest();\n//   xhr.open('GET', this.url);\n//   xhr.send();\n//\n//   xhr.addEventListener('load', () => {\n//     if (xhr.status !== 200) {\n//       onError(xhr.status);\n//       return;\n//     }\n//\n//     const jsonString = xhr.responseText;\n//     const data = JSON.parse(jsonString);\n//     onComplete(data);\n//   });\n// };\nmodule.exports = Request;\n\n\n//# sourceURL=webpack:///./src/helpers/request_helper.js?");
+
+/***/ }),
+
+/***/ "./src/models/monsters.js":
+/*!********************************!*\
+  !*** ./src/models/monsters.js ***!
+  \********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+eval("const PubSub = __webpack_require__(/*! ../helpers/pub_sub.js */ \"./src/helpers/pub_sub.js\");\nconst Request = __webpack_require__(/*! ../helpers/request_helper.js */ \"./src/helpers/request_helper.js\");\n\nconst Monsters = function () {\n  this.monsters = [];\n};\n\n  Monsters.prototype.getData = function () {\n    const url = \"http://www.dnd5eapi.co/api/monsters/\";\n      const request = new Request(url);\n      request.get()\n        .then( (monsters) => {\n          this.monsters = monsters;\n          PubSub.publish(\"Monsters:Monsters-ready\", this.monsters);\n        })\n        .catch((error) => {\n          PubSub.publish(\"Monsters:error\", error);\n        })\n  };\n\nmodule.exports = Monsters;\n\n\n//# sourceURL=webpack:///./src/models/monsters.js?");
 
 /***/ })
 
