@@ -13,12 +13,15 @@ const SelectedMonster = function (container) {
 
   SelectedMonster.prototype.render = function (monsterInfo) {
     const infoMonsterName = document.createElement("h1");
-    infoMonsterName.textContent = `Name: ${monsterInfo.name}`;
+    infoMonsterName.textContent = `${monsterInfo.name} (CR:${monsterInfo.challenge_rating})`;
+
+
+
     const infoMonsterAlignment = document.createElement("p");
     infoMonsterAlignment.textContent = `Alignment: ${monsterInfo.alignment}`;
 
-    const infoMonsterSize = document.createElement("h2");
-    infoMonsterSize.textContent = `Size: ${monsterInfo.size}`;
+    const infoMonsterSizeType = document.createElement("h2");
+    infoMonsterSizeType.textContent = `${monsterInfo.size} ${monsterInfo.type}`;
 
     const infoMonsterStats = document.createElement("p");
     infoMonsterStats.textContent =
@@ -30,7 +33,7 @@ const SelectedMonster = function (container) {
 
     this.container.innerHTML = "";
     this.container.appendChild(infoMonsterName);
-    this.container.appendChild(infoMonsterSize);
+    this.container.appendChild(infoMonsterSizeType);
     this.container.appendChild(infoMonsterAlignment);
     this.container.appendChild(infoMonsterSpeed);
     this.container.appendChild(infoMonsterStats);
