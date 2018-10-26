@@ -93,7 +93,7 @@
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-eval("const Monsters = __webpack_require__(/*! ./models/monsters.js */ \"./src/models/monsters.js\");\n\n\ndocument.addEventListener('DOMContentLoaded', () => {\n  console.log(\"JavaScript loaded.\")\n\n  const monsters = new Monsters();\n  monsters.getData()\n  console.log(monsters)\n\n});\n\n\n//# sourceURL=webpack:///./src/app.js?");
+eval("const Monsters = __webpack_require__(/*! ./models/monsters.js */ \"./src/models/monsters.js\");\nconst SelectMonster = __webpack_require__(/*! ./views/monsters_select_view.js */ \"./src/views/monsters_select_view.js\")\nconst SelectedMonster = __webpack_require__(/*! ./views/monster_view.js */ \"./src/views/monster_view.js\")\n\ndocument.addEventListener('DOMContentLoaded', () => {\n\n  const monsters = new Monsters();\n  monsters.getData()\n  \n  const selectedElement = document.querySelector(\"select#monsters\");\n  const monsterDropdown = new SelectMonster(selectedElement);\n  monsterDropdown.bindEvents()\n\n  const infoSec = document.querySelector(\"div#monster\");\n  const selectedMonster = new SelectedMonster(infoSec);\n  selectedMonster.bindEvents();\n\n});\n\n\n//# sourceURL=webpack:///./src/app.js?");
 
 /***/ }),
 
@@ -104,7 +104,7 @@ eval("const Monsters = __webpack_require__(/*! ./models/monsters.js */ \"./src/m
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-eval("const PubSub = {\n  publish: function (channel, payload) {\n    const event = new CustomEvent(channel, {\n      detail: payload\n    });\n    document.dispatchEvent(event);\n  },\n\n  subscribe: function (channel, callback) {\n    document.addEventListener(channel, callback);\n  }\n};\n\nmodule.exports = PubSub;\n\n\n//# sourceURL=webpack:///./src/helpers/pub_sub.js?");
+eval("const PubSub = {\n  publish: function (channel, payload) {\n    const event = new CustomEvent(channel, {\n      detail: payload\n    });\n    document.dispatchEvent(event);\n    // console.log(`channel: ${channel}, payload: ${payload}`);\n  },\n\n  subscribe: function (channel, callback) {\n    document.addEventListener(channel, callback);\n    // console.log(`channel: ${channel}`);\n  }\n};\n\nmodule.exports = PubSub;\n\n\n//# sourceURL=webpack:///./src/helpers/pub_sub.js?");
 
 /***/ }),
 
@@ -126,7 +126,29 @@ eval("const Request = function (url) {\n  this.url = url;\n};\n\nRequest.prototy
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-eval("const PubSub = __webpack_require__(/*! ../helpers/pub_sub.js */ \"./src/helpers/pub_sub.js\");\nconst Request = __webpack_require__(/*! ../helpers/request_helper.js */ \"./src/helpers/request_helper.js\");\n\nconst Monsters = function () {\n  this.monsters = [];\n};\n\n  Monsters.prototype.getData = function () {\n    const url = \"http://www.dnd5eapi.co/api/monsters/\";\n      const request = new Request(url);\n      request.get()\n        .then( (monsters) => {\n          this.monsters = monsters;\n          PubSub.publish(\"Monsters:Monsters-ready\", this.monsters);\n        })\n        .catch((error) => {\n          PubSub.publish(\"Monsters:error\", error);\n        })\n  };\n\nmodule.exports = Monsters;\n\n\n//# sourceURL=webpack:///./src/models/monsters.js?");
+eval("const PubSub = __webpack_require__(/*! ../helpers/pub_sub.js */ \"./src/helpers/pub_sub.js\");\nconst Request = __webpack_require__(/*! ../helpers/request_helper.js */ \"./src/helpers/request_helper.js\");\n\nconst Monsters = function () {\n  this.monsters = [];\n};\n\n  Monsters.prototype.getIndividualData = function () {\n\n  };\n\n  Monsters.prototype.getData = function () {\n    const url = `http://www.dnd5eapi.co/api/monsters/`;\n      const request = new Request(url);\n      request.get()\n        .then( (monsters) => {\n          this.monsters = monsters.results;\n          PubSub.publish(\"Monsters:all-monsters-ready\", this.monsters);\n          PubSub.subscribe(\"SelectMonster:change\", (evt) => {\n            const selectedIndex = evt.detail;\n            console.log(selectedIndex)\n            this.publishMonsterDetail(selectedIndex);\n          })\n        })\n        .catch((error) => {\n          PubSub.publish(\"Monsters:error\", error);\n        })\n  };\n\n  Monsters.prototype.publishMonsterDetail = function (monsterIndex) {\n    id = parseInt(monsterIndex) + 1\n    // console.log(id)\n    const url = `http://www.dnd5eapi.co/api/monsters/${id}`\n    const request = new Request(url)\n      request.get()\n        .then((monster) => {\n        this.monster = monster\n        console.log(monster)\n        PubSub.publish(\"Monster:selected-monster-ready\", this.monster);\n        })\n\n  };\n\n\n\n\n\n  // Monsters.prototype.getData = function (monsterIndex) {\n  //   id = monsterIndex + 1\n  //   const url = `http://www.dnd5eapi.co/api/monsters/${id}`;\n  //     const request = new Request(url);\n  //     request.get()\n  //       .then( (monsters) => {\n  //         this.monsters = monsters.results;\n  //         PubSub.publish(\"Monsters:all-monsters-ready\", this.monsters);\n  //       })\n  //       .catch((error) => {\n  //         PubSub.publish(\"Monsters:error\", error);\n  //       })\n  // };\n\n\n// Activity.prototype.getData = function (activityType) {\n// const url = `https://www.boredapi.com/api/activity?type=${ activityType }`;\n//   const request = new Request(url);\n//   request.get()\n//     .then( (data) => {\n//       this.data = data;\n//       PubSub.publish(\"Activity:activity-ready\", this.data);\n//     })\n//     .catch((error) => {\n//       PubSub.publish(\"Activity:error\", error)\n//     })\n// };\n\nmodule.exports = Monsters;\n\n\n//# sourceURL=webpack:///./src/models/monsters.js?");
+
+/***/ }),
+
+/***/ "./src/views/monster_view.js":
+/*!***********************************!*\
+  !*** ./src/views/monster_view.js ***!
+  \***********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+eval("const PubSub = __webpack_require__(/*! ../helpers/pub_sub.js */ \"./src/helpers/pub_sub.js\");\n\nconst SelectedMonster = function (container) {\n  this.container = container;\n};\n\n  SelectedMonster.prototype.bindEvents = function () {\n    PubSub.subscribe(\"Monster:selected-monster-ready\", (evt) => {\n      const monster = evt.detail;\n      this.render(monster);\n    });\n  };\n\n  SelectedMonster.prototype.render = function (monsterInfo) {\n    const infoMonsterName = document.createElement(\"h1\");\n    infoMonsterName.textContent = `Name: ${monsterInfo.name}`;\n    const infoMonsterAlignment = document.createElement(\"p\");\n    infoMonsterAlignment.textContent = `Alignment: ${monsterInfo.alignment}`;\n\n    const infoMonsterSize = document.createElement(\"h2\");\n    infoMonsterSize.textContent = `Size: ${monsterInfo.size}`;\n\n    const infoMonsterStats = document.createElement(\"p\");\n    infoMonsterStats.textContent =\n      `Stats: Str (${monsterInfo.strength}), Dex: (${monsterInfo.dexterity}), Con: (${monsterInfo.constitution}), Wis: (${monsterInfo.wisdom}), Int: ${monsterInfo.intelligence}, Cha: (${monsterInfo.charisma})`;\n\n    const infoMonsterSpeed = document.createElement(\"p\");\n    infoMonsterSpeed.textContent = `Speed: ${monsterInfo.speed}`;\n\n\n    this.container.innerHTML = \"\";\n    this.container.appendChild(infoMonsterName);\n    this.container.appendChild(infoMonsterSize);\n    this.container.appendChild(infoMonsterAlignment);\n    this.container.appendChild(infoMonsterSpeed);\n    this.container.appendChild(infoMonsterStats);\n  };\n\n\nmodule.exports = SelectedMonster;\n\n\n//# sourceURL=webpack:///./src/views/monster_view.js?");
+
+/***/ }),
+
+/***/ "./src/views/monsters_select_view.js":
+/*!*******************************************!*\
+  !*** ./src/views/monsters_select_view.js ***!
+  \*******************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+eval("const PubSub = __webpack_require__(/*! ../helpers/pub_sub.js */ \"./src/helpers/pub_sub.js\");\n\nconst SelectMonster = function (element) {\n  this.element = element;\n};\n\n  SelectMonster.prototype.bindEvents = function () {\n    PubSub.subscribe(\"Monsters:all-monsters-ready\", (evt) => {\n      const allMonsters = evt.detail;\n      console.log(allMonsters);\n      this.populate(allMonsters);\n    });\n    this.element.addEventListener(\"change\", (evt) => {\n      const selectedIndex = evt.target.value;\n      PubSub.publish(\"SelectMonster:change\", selectedIndex);\n    });\n  };\n\n  SelectMonster.prototype.populate = function (monstersData) {\n    // console.log(monstersData)\n    monstersData.forEach((monster, index) => {\n      const option = document.createElement(\"option\");\n      option.textContent = monster.name;\n      option.value = index;\n      this.element.appendChild(option)\n    });\n  };\n\nmodule.exports = SelectMonster\n\n\n//# sourceURL=webpack:///./src/views/monsters_select_view.js?");
 
 /***/ })
 
