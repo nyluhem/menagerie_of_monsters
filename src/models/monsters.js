@@ -62,22 +62,7 @@ Monsters.prototype.publishByUrl = function (url) {
         this.monster = monster
         console.log(this.monster)
         PubSub.publish("Monster:selected-monster-ready", this.monster);
-      });
+      })
 };
-
-
-//
-// Activity.prototype.getData = function (activityType) {
-// const url = `https://www.boredapi.com/api/activity?type=${ activityType }`;
-//   const request = new Request(url);
-//   request.get()
-//     .then( (data) => {
-//       this.data = data;
-//       PubSub.publish("Activity:activity-ready", this.data);
-//     })
-//     .catch((error) => {
-//       PubSub.publish("Activity:error", error)
-//     })
-// };
 
 module.exports = Monsters;
