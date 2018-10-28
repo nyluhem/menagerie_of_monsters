@@ -15,8 +15,6 @@ const SelectedMonster = function (container) {
     const infoMonsterName = document.createElement("h1");
     infoMonsterName.textContent = `${monsterInfo.name} (CR:${monsterInfo.challenge_rating})`;
 
-
-
     const infoMonsterAlignment = document.createElement("p");
     infoMonsterAlignment.textContent = `Alignment: ${monsterInfo.alignment}`;
 
@@ -25,11 +23,10 @@ const SelectedMonster = function (container) {
 
     const infoMonsterStats = document.createElement("p");
     infoMonsterStats.textContent =
-      `Stats: Str (${monsterInfo.strength}), Dex: (${monsterInfo.dexterity}), Con: (${monsterInfo.constitution}), Wis: (${monsterInfo.wisdom}), Int: ${monsterInfo.intelligence}, Cha: (${monsterInfo.charisma})`;
+      `Stats: Str (${monsterInfo.strength}), Dex: (${monsterInfo.dexterity}), Con: (${monsterInfo.constitution}), Wis: (${monsterInfo.wisdom}), Int: (${monsterInfo.intelligence}), Cha: (${monsterInfo.charisma})`;
 
     const infoMonsterSpeed = document.createElement("p");
     infoMonsterSpeed.textContent = `Speed: ${monsterInfo.speed}`;
-
 
     this.container.innerHTML = "";
     this.container.appendChild(infoMonsterName);
@@ -38,6 +35,5 @@ const SelectedMonster = function (container) {
     this.container.appendChild(infoMonsterSpeed);
     this.container.appendChild(infoMonsterStats);
   };
-
 
 module.exports = SelectedMonster;

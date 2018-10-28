@@ -14,5 +14,4 @@ const MonsterSearchView = function (formElement) {
     });
   };
 
-
 module.exports = MonsterSearchView

@@ -39,8 +39,10 @@ Monsters.prototype.publishMonsterDetail = function (monsterIndex) {
 Monsters.prototype.bindEvents = function () {
   PubSub.subscribe("Monster:search-monster-ready", (evt) =>{
     const monsterName = evt.detail
-    console.log(monsterName)
-    this.getName(monsterName)
+    const capitalMonster = monsterName.replace(/\b\w/g, l => l.toUpperCase())
+    console.log(capitalMonster)
+    const trimmedCapitalisedMonster = capitalMonster.trim();
+    this.getName(trimmedCapitalisedMonster)
   });
 };
 
@@ -64,5 +66,7 @@ Monsters.prototype.publishByUrl = function (url) {
         PubSub.publish("Monster:selected-monster-ready", this.monster);
       })
 };
+
+
 
 module.exports = Monsters;
